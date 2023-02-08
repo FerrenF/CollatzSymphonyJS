@@ -1,8 +1,9 @@
-const message = 'Collatz Symphony Generator V.0.lol' // Try edit me
-
+const message = 'Collatz Symphony Generator V.0.lol'
 console.log(message)
-//if you have another AudioContext class use that one, as some browsers have a limit
+
 var audioCtx = new (window.AudioContext || window.webkitAudioContext || window.audioContext);
+
+//This function is similar to the beep function in C++/Python. It produces a sine wave by default for duration at frequency.
 // CREDIT: https://stackoverflow.com/a/29641185
 function beep(duration, frequency, volume, type, callback) {
     var oscillator = audioCtx.createOscillator();
@@ -19,6 +20,8 @@ function beep(duration, frequency, volume, type, callback) {
     oscillator.start(audioCtx.currentTime);
     oscillator.stop(audioCtx.currentTime + ((duration || 500) / 1000));
 };
+
+//Collatz Conjecture recursion function.
 function collatx(n){
   let v = n[0];
   if(v === 1){
@@ -31,11 +34,14 @@ function collatx(n){
    let nw = v / 2;
   return collatx([nw].concat(n));
 }
+
+//Helper function to wrap our variable in an array and feed it into the collatx function
 function collatz(n){
   let a = [];
   a.push(n);
   return collatx(a)
 }
+
 function get_input(){
   var num = prompt("Enter a number: ");
   if(isNaN(num)){
@@ -44,20 +50,26 @@ function get_input(){
   return num;
 }
 
+//Magic
 function do_beeps(num){
   let steps = collatz(num);
   let max = 1;
+
+  //Find our max first. We need that to scale our steps.
   for(step in steps){
     let i = steps[step];
     if(i>max){
       max=i;
     }
   }
-  // Update header text
-  let sound_step = 20000 / max;
+
+  // The human range of hearing is about 20-20000 hz. We are going to divide that total range into steps based on our max value.
+  let sound_step = (20000-20) / max;
   for(step in steps){
     
     let tone = sound_step * steps[step];
+
+    // For each of these steps, we will set a timer to play our sound at the specified frequency, delayed so that they do not play on top of eachother. Hopefully, they all play.
     setTimeout(function() {
     beep(300,tone,0.5);
     }, 350*step);  
@@ -69,8 +81,10 @@ function do_beeps(num){
 let num = get_input()
 steps = do_beeps(num);
 
+
+// You know what, the site I built this on didn't display any output nicely, so this is how it ended up before I moved on: as a list. Implemented somewhere else it would probably look fine.
 let stepsList = "";
 for( step in steps){
   stepsList = stepsList + "<li>"+steps[step]+"</li>";
 }
-document.querySelector('#header').innerHTML="<p>Collatz Symphony:</p><ul>" +stepsList+"</ul>";
+document.querySelector('#header').innerHTML="<div><p>Collatz Symphony:</p><ul>" +stepsList+"</ul></div>";
