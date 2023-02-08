@@ -73,9 +73,8 @@ function do_beeps(num){
     setTimeout(function() {
     beep(300,tone,0.5);
     }, 350*step);  
-    console.log("beep " + tone);
-   
   }
+  console.log("Symphony prepared. Steps created: " + steps.length);
  return steps;
 }
 let num = get_input()
