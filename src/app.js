@@ -44,7 +44,7 @@ function collatz(n){
 
 function get_input(){
   var num = prompt("Enter a number: ");
-  if(isNaN(num)){
+  if(isNaN(num) || (num == null)){
     return get_input();
   }
   return num;
